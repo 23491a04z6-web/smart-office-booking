@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Panel</title>
+<style>
+body{font-family:Arial;padding:40px;background:#f4f6f9;}
+button{padding:8px 15px;margin:5px;cursor:pointer;}
+.card{background:white;padding:15px;margin:10px 0;border-radius:8px;}
+</style>
+</head>
+
+<body>
+
+<h2>Admin Dashboard</h2>
+
+<h3>Manage Tables</h3>
+
+<input type="number" id="chairCount" placeholder="Chairs per table">
+<button onclick="addTable()">➕ Add Table</button>
+
+<input type="number" id="deleteId" placeholder="Table ID">
+<button onclick="deleteTable()">Delete Table</button>
+
+<button onclick="clearTables()">🧹 Clear All</button>
+
+<hr>
+
+<h3>All Bookings</h3>
+<div id="adminBookings"></div>
+<script>
+
+if(localStorage.getItem("role") !== "admin"){
+    alert("Access denied");
+    window.location.href = "index.html";
+}
+
+/* ===== INITIALIZE LAYOUT ===== */
+
+if(!localStorage.getItem("officeLayout")){
+    localStorage.setItem("officeLayout", JSON.stringify({
+        floors: {
+            1: { tables: [] },
+            2: { tables: [] },
+            3: { tables: [] },
+            4: { tables: [] }
+        }
+    }));
+}
+
+function getLayout(){
+    return JSON.parse(localStorage.getItem("officeLayout"));
+}
+
+function saveLayout(layout){
+    localStorage.setItem("officeLayout", JSON.stringify(layout));
+}
+
+/* ===== ADD TABLE ===== */
+
+function addTable(){
+
+    let layout = getLayout();
+    let floor = 1;
+
+    let chairs = parseInt(document.getElementById("chairCount").value);
+
+    if(!chairs || chairs < 1){
+        alert("Enter valid chair number");
+        return;
+    }
+
+    let tables = layout.floors[floor].tables;
+
+    let newId = tables.length > 0
+        ? tables[tables.length - 1].id + 1
+        : 1;
+
+    tables.push({
+        id: newId,
+        chairs: chairs
+    });
+
+    saveLayout(layout);
+
+    alert("Table Added Successfully");
+}
+
+/* ===== DELETE TABLE ===== */
+
+function deleteTable(){
+
+    let layout = getLayout();
+    let floor = 1;
+
+    let id = parseInt(document.getElementById("deleteId").value);
+
+    layout.floors[floor].tables =
+        layout.floors[floor].tables.filter(t => t.id !== id);
+
+    saveLayout(layout);
+
+    alert("Table Deleted");
+}
+
+/* ===== CLEAR ALL ===== */
+
+function clearTables(){
+
+    if(confirm("Clear everything?")){
+
+        localStorage.setItem("officeLayout", JSON.stringify({
+            floors: {
+                1: { tables: [] },
+                2: { tables: [] },
+                3: { tables: [] },
+                4: { tables: [] }
+            }
+        }));
+
+        localStorage.removeItem("bookings");
+
+        alert("All tables cleared");
+        location.reload();
+    }
+}
+
+/* ===== SHOW BOOKINGS ===== */
+
+let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+let container = document.getElementById("adminBookings");
+
+if(bookings.length === 0){
+    container.innerHTML = "No bookings yet";
+}else{
+    bookings.forEach((b,i)=>{
+        container.innerHTML += `
+            <div class="card">
+                <p>User: ${b.user}</p>
+                <p>Seat: ${b.seat}</p>
+                <p>Date: ${b.date}</p>
+                <button onclick="cancelBooking(${i})">Cancel</button>
+            </div>
+        `;
+    });
+}
+
+function cancelBooking(index){
+
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+    let seatId = bookings[index].seat;
+
+    bookings.splice(index,1);
+
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+    localStorage.removeItem(seatId);
+
+    alert("Booking cancelled");
+    location.reload();
+}
+
+</script>
+</body>
+</html>

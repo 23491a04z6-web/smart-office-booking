@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+  <link rel="stylesheet" href="otp.css">
+</head>
+<body class="otp-bg">
+
+<div class="card">
+  <h2>OTP Verification</h2>
+  <p>Enter the OTP sent to your email</p>
+
+  <input type="number" id="otp" placeholder="Enter OTP">
+  <input type="password" id="newPassword" placeholder="New Password">
+  <input type="password" id="confirmPassword" placeholder="Confirm Password">
+
+  <button onclick="verifyOTP()">Reset Password</button>
+
+  <p><a href="forgot.html">Back to Forgot Password</a></p>
+</div>
+
+<script>
+function verifyOTP() {
+  const otp = document.getElementById("otp").value;
+  const newPass = document.getElementById("newPassword").value;
+  const confirmPass = document.getElementById("confirmPassword").value;
+
+  if(!otp) { alert("Please enter OTP"); return; }
+  if(!newPass || newPass.length < 6) { alert("Password must be at least 6 characters"); return; }
+  if(newPass !== confirmPass) { alert("Passwords do not match"); return; }
+
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

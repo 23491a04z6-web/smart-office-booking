@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password</title>
+  <link rel="stylesheet" href="forgot.css">
+</head>
+<body class="forgot-bg">
+
+<div class="card">
+  <h2>Forgot Password</h2>
+  <p>Enter your registered email to receive OTP</p>
+
+  <input type="email" id="email" placeholder="Email">
+
+  <button onclick="sendOTP()">Send OTP</button>
+
+  <p><a href="index.html">Back to Login</a></p>
+</div>
+
+<script>
+function sendOTP() {
+  const email = document.getElementById("email").value;
+  if(!email) { alert("Please enter your email"); return; }
+ 
+
+  // Redirect to OTP page
+  window.location.href = "otp.html";
+}
+</script>
+
+</body>
+</html>

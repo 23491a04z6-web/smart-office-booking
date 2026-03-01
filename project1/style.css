@@ -1,0 +1,155 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Background for login */
+.bg {
+  height: 100vh;
+  width: 100%;
+  background: url("arif.jpeg") center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card styling */
+.card {
+  width: 360px;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 14px;
+  text-align: center;
+  color: white;
+  animation: fade 0.6s ease;
+}
+
+.card h2 {
+  margin-bottom: 20px;
+}
+
+.card input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+}
+
+.card input:focus {
+  box-shadow: 0 0 8px rgba(0, 242, 254, 0.8);
+  transition: 0.3s;
+}
+
+/* Regular login button */
+.card button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card button:hover {
+  opacity: 0.9;
+  transform: scale(1.03);
+}
+
+/* Link */
+.link {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.link a {
+  color: #00f2fe;
+  text-decoration: none;
+}
+
+/* Fade animation for card */
+@keyframes fade {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Password eye toggle */
+.input-box {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.input-box input {
+  padding-right: 40px;
+}
+
+.eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ddd;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.eye:hover {
+  color: #00f2fe;
+  transform: translateY(-50%) scale(1.2);
+}
+
+/* Social login buttons */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.google-btn {
+  background: #db4437;
+}
+
+.google-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.facebook-btn {
+  background: #4267B2;
+}
+
+.facebook-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.social-btn i {
+  font-size: 16px;
+}

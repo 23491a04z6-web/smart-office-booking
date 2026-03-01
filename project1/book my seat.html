@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Office - Book My Seat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+    --primary:#3b82f6;
+    --bg:linear-gradient(135deg,#eef2ff,#f8fafc); 
+    --card:rgba(255,255,255,0.6);
+    --glass:rgba(255,255,255,0.3);
+    --text:#1e293b;
+}
+
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* ===== MAIN ===== */
+.main{
+    padding:40px 60px;
+}
+
+/* ===== TOPBAR ===== */
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:40px;
+}
+
+.topbar h2{
+    font-size:30px;
+    font-weight:700;
+}
+
+/* ===== STATS GLASS CARDS ===== */
+.stats{
+    display:flex;
+    gap:25px;
+    margin-bottom:40px;
+}
+
+.stat-card{
+    flex:1;
+    backdrop-filter:blur(10px);
+    background:var(--card);
+    border-radius:20px;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 15px 35px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-card h3{
+    margin:0;
+    font-size:28px;
+    color:var(--primary);
+}
+
+/* ===== LEGEND ===== */
+.legend{
+    display:flex;
+    gap:30px;
+    margin-bottom:30px;
+}
+
+.legend div{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.dot{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+}
+
+.available{ background:#10b981; }
+.selected-dot{ background:var(--primary); }
+.booked-dot{ background:#ef4444; }
+
+/* ===== TABLE GRID ===== */
+.tables{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:90px;
+    justify-items:center;
+    margin-top:40px;
+}
+
+/* ===== TABLE DESIGN ===== */
+.table{
+    position:relative;
+    width:180px;
+    height:180px;
+    border-radius:24px;
+    background:linear-gradient(145deg,#c9a27a,#a47148);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+    font-size:18px;
+    color:white;
+    box-shadow:
+        0 25px 50px rgba(0,0,0,0.25),
+        inset 0 6px 12px rgba(255,255,255,0.4);
+    transition:0.3s ease;
+}
+
+.table:hover{
+    transform:translateY(-12px);
+}
+
+/* ===== CHAIRS ===== */
+.chair{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    position:absolute;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:bold;
+    color:white;
+    background:linear-gradient(145deg,#34d399,#059669);
+    box-shadow:0 8px 15px rgba(0,0,0,0.25);
+    transition:0.3s ease;
+}
+
+.chair:hover{
+    transform:scale(1.3);
+}
+
+.chair.selected{
+    background:linear-gradient(145deg,#3b82f6,#1d4ed8);
+    box-shadow:0 0 15px rgba(59,130,246,0.9);
+}
+
+.chair.booked{
+    background:linear-gradient(145deg,#ef4444,#b91c1c);
+    cursor:not-allowed;
+}
+
+/* ===== BUTTON ===== */
+.book-btn{
+    margin-top:60px;
+    padding:16px 55px;
+    font-size:16px;
+    border:none;
+    border-radius:12px;
+    background:var(--primary);
+    color:white;
+    cursor:pointer;
+    box-shadow:0 10px 25px rgba(59,130,246,0.4);
+    transition:0.3s;
+}
+
+.book-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-3px);
+}
+</style>
+</head>
+
+<body>
+
+<div class="main">
+
+<div class="topbar">
+    <h2>Smart Office - Book My Seat</h2>
+    <div>
+        Floor:
+        <select onchange="changeFloor(this.value)">
+            <option value="1">Floor 1</option>
+            <option value="2">Floor 2</option>
+            <option value="3">Floor 3</option>
+            <option value="4">Floor 4</option>
+        </select>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="stat-card">
+        <h3 id="totalSeats">0</h3>
+        <small>Total Seats</small>
+    </div>
+    <div class="stat-card">
+        <h3 id="bookedSeats">0</h3>
+        <small>Booked</small>
+    </div>
+    <div class="stat-card">
+        <h3 id="availableSeats">0</h3>
+        <small>Available</small>
+    </div>
+</div>
+
+<div class="legend">
+    <div><span class="dot available"></span> Available</div>
+    <div><span class="dot selected-dot"></span> Selected</div>
+    <div><span class="dot booked-dot"></span> Booked</div>
+</div>
+
+<div id="office"></div>
+
+<button class="book-btn" onclick="bookChair()">Confirm Booking</button>
+
+</div>
+
+<script>
+
+let selectedChair = null;
+let currentFloor = 1;
+const office = document.getElementById("office");
+
+/* ===== GET LAYOUT ===== */
+function getLayout(){
+    return JSON.parse(localStorage.getItem("officeLayout")) || {
+        tables: 10,
+        chairsPerTable: 6
+    };
+}
+
+/* ===== FLOOR CHANGE ===== */
+function changeFloor(f){
+    currentFloor = f;
+    loadFloor();
+}
+
+/* ===== LOAD FLOOR ===== */
+function loadFloor(){
+
+    office.innerHTML = "";
+    let tablesDiv = document.createElement("div");
+    tablesDiv.classList.add("tables");
+
+    let layout = JSON.parse(localStorage.getItem("officeLayout"));
+
+    if(!layout || !layout.floors[currentFloor] || layout.floors[currentFloor].tables.length === 0){
+        office.innerHTML = "<h3>No tables available on this floor</h3>";
+        return;
+    }
+
+    let tables = layout.floors[currentFloor].tables;
+
+    let total = 0;
+    let booked = 0;
+
+    tables.forEach(tableData => {
+
+        let table = document.createElement("div");
+        table.classList.add("table");
+        table.innerText = "Table " + tableData.id;
+
+        for(let c = 1; c <= tableData.chairs; c++){
+
+            total++;
+
+            let chair = document.createElement("div");
+            chair.classList.add("chair");
+            chair.innerText = c;
+
+            let chairId = "F" + currentFloor + "-T" + tableData.id + "-C" + c;
+
+            const pos = [
+                "top:-20px; left:65px;",
+                "bottom:-20px; left:65px;",
+                "left:-20px; top:65px;",
+                "right:-20px; top:65px;",
+                "top:-20px; right:30px;",
+                "bottom:-20px; right:30px;"
+            ];
+
+            if(pos[c-1]) chair.style.cssText += pos[c-1];
+
+            if(localStorage.getItem(chairId) === "booked"){
+                chair.classList.add("booked");
+                booked++;
+            }
+
+            chair.onclick = function(){
+                if(chair.classList.contains("booked")) return;
+                document.querySelectorAll(".chair").forEach(ch => ch.classList.remove("selected"));
+                chair.classList.add("selected");
+                selectedChair = chairId;
+            }
+
+            table.appendChild(chair);
+        }
+
+        tablesDiv.appendChild(table);
+    });
+
+    office.appendChild(tablesDiv);
+
+    document.getElementById("totalSeats").innerText = total;
+    document.getElementById("bookedSeats").innerText = booked;
+    document.getElementById("availableSeats").innerText = total - booked;
+}
+
+
+/* ===== BOOK CHAIR ===== */
+function bookChair(){
+
+    if(!selectedChair){
+        alert("Please select a seat first");
+        return;
+    }
+
+    let user = localStorage.getItem("loggedInUser");
+
+    if(!user){
+        alert("Please login first!");
+        return;
+    }
+
+    localStorage.setItem(selectedChair, "booked");
+
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+    bookings.push({
+        user: user,
+        seat: selectedChair,
+        date: new Date().toLocaleString(),
+        status: "Active"
+    });
+
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+
+    alert("Seat booked successfully!");
+
+    selectedChair = null;
+    loadFloor();
+}
+
+
+
+</script>
+
+</body>
+</html>

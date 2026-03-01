@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arif Tech Solutions - Company Profile</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f4f6f9;
+}
+
+/* ===== HEADER ===== */
+header{
+    background:linear-gradient(135deg,#1e3c72,#2a5298);
+    color:white;
+    text-align:center;
+    padding:40px;
+}
+
+header h1{
+    margin:0;
+    font-size:32px;
+}
+
+/* ===== SECTION ===== */
+.section{
+    padding:40px 20px;
+    text-align:center;
+}
+
+.section h2{
+    color:#2c3e50;
+    margin-bottom:20px;
+}
+
+/* ===== COMPANY DETAILS ===== */
+.details-box{
+    background:white;
+    width:80%;
+    margin:auto;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
+    text-align:left;
+}
+
+.details-box p{
+    margin:10px 0;
+}
+
+/* ===== SERVICES ===== */
+.cards{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.card{
+    background:white;
+    width:250px;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* ===== CALENDAR ===== */
+.calendar-container{
+    width:400px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
+}
+
+.calendar-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.calendar-header button{
+    padding:5px 10px;
+    border:none;
+    background:#2a5298;
+    color:white;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+.calendar{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+}
+
+.day{
+    padding:10px;
+    background:#f4f6f9;
+    border-radius:6px;
+    cursor:pointer;
+    text-align:center;
+}
+
+.day:hover{
+    background:#4CAF50;
+    color:white;
+}
+
+.today{
+    background:#2a5298;
+    color:white;
+    font-weight:bold;
+}
+
+.event-day{
+    background:#ffeb3b;
+}
+
+/* ===== POPUP ===== */
+.event-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+
+.event-popup{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    width:280px;
+}
+
+.close-btn{
+    float:right;
+    cursor:pointer;
+}
+
+/* ===== FOOTER ===== */
+footer{
+    background:#2c3e50;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:30px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Arif Tech Solutions</h1>
+    <p>Innovating the Future with Technology</p>
+</header>
+
+<!-- ===== COMPANY DETAILS SECTION ===== -->
+<section class="section">
+    <h2>Company Details</h2>
+
+    <div class="details-box">
+        <p><strong>Founded:</strong> 2022</p>
+        <p><strong>CEO:</strong> Arif </p>
+        <p><strong>Employees:</strong> 500+</p>
+        <p><strong>Head Office:</strong> Bangalore, India</p>
+        <p><strong>Email:</strong> info@ariftech.com</p>
+        <p><strong>Phone:</strong> +91 7671991578 </p>
+        <p><strong>Website:</strong> www.ariftech.com</p>
+        <p><strong>About:</strong> We specialize in web applications, enterprise systems, and IT consulting solutions for global clients.</p>
+    </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="section">
+    <h2>Our Services</h2>
+    <div class="cards">
+        <div class="card">Web Development</div>
+        <div class="card">Enterprise Software</div>
+        <div class="card">IT Consulting</div>
+    </div>
+</section>
+
+<!-- ===== REAL CALENDAR ===== -->
+<section class="section">
+    <h2>Company Calendar</h2>
+
+    <div class="calendar-container">
+
+        <div class="calendar-header">
+            <button onclick="prevMonth()">Prev</button>
+            <h3 id="monthYear"></h3>
+            <button onclick="nextMonth()">Next</button>
+        </div>
+
+        <div class="calendar" id="calendar"></div>
+
+    </div>
+</section>
+
+<!-- ===== POPUP ===== -->
+<div id="eventOverlay" class="event-overlay">
+    <div class="event-popup">
+        <span class="close-btn" onclick="closePopup()">X</span>
+        <h3>Company Event</h3>
+        <p id="eventDate"></p>
+        <p>Team Meeting at 10:00 AM</p>
+    </div>
+</div>
+
+<footer>
+    © 2026 Arif Tech Solutions | All Rights Reserved
+</footer>
+
+<script>
+
+let date = new Date();
+let currentMonth = date.getMonth();
+let currentYear = date.getFullYear();
+
+const monthYear = document.getElementById("monthYear");
+const calendar = document.getElementById("calendar");
+
+const eventDate = 15;
+
+function renderCalendar(){
+
+    calendar.innerHTML = "";
+
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    monthYear.innerText =
+        new Date(currentYear, currentMonth)
+        .toLocaleString("default", { month: "long", year: "numeric" });
+
+    for(let i = 0; i < firstDay; i++){
+        calendar.innerHTML += "<div></div>";
+    }
+
+    for(let day = 1; day <= daysInMonth; day++){
+
+        let dayDiv = document.createElement("div");
+        dayDiv.classList.add("day");
+        dayDiv.innerText = day;
+
+        if(day === date.getDate() &&
+           currentMonth === date.getMonth() &&
+           currentYear === date.getFullYear()){
+            dayDiv.classList.add("today");
+        }
+
+        if(day === eventDate){
+            dayDiv.classList.add("event-day");
+            dayDiv.onclick = function(){
+                openPopup(day);
+            }
+        }
+
+        calendar.appendChild(dayDiv);
+    }
+}
+
+function prevMonth(){
+    currentMonth--;
+    if(currentMonth < 0){
+        currentMonth = 11;
+        currentYear--;
+    }
+    renderCalendar();
+}
+
+function nextMonth(){
+    currentMonth++;
+    if(currentMonth > 11){
+        currentMonth = 0;
+        currentYear++;
+    }
+    renderCalendar();
+}
+
+function openPopup(day){
+    document.getElementById("eventOverlay").style.display="flex";
+    document.getElementById("eventDate").innerText =
+        "Event Date: " + day + " " +
+        new Date(currentYear, currentMonth)
+        .toLocaleString("default",{ month:"long", year:"numeric" });
+}
+
+function closePopup(){
+    document.getElementById("eventOverlay").style.display="none";
+}
+
+renderCalendar();
+
+</script>
+
+</body>
+</html>
+

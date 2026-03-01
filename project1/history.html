@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Bookings</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .booking-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .seat-id {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .badge {
+            background: #22c55e;
+            color: white;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .cancel-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .cancel-btn:hover {
+            background: #dc2626;
+        }
+
+        .no-booking {
+            text-align: center;
+            margin-top: 40px;
+            color: gray;
+        }
+
+        .back-btn {
+            display: block;
+            width: 200px;
+            margin: 40px auto;
+            text-align: center;
+            padding: 10px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>My Booking History</h2>
+
+<div class="container" id="bookingContainer"></div>
+
+<a href="dashboard.html" class="back-btn">Back to Dashboard</a>
+<script>
+
+window.onload = function () {
+
+    let user = localStorage.getItem("loggedInUser");
+
+    if (!user) {
+        alert("Please login first!");
+        return;
+    }
+
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+    let container = document.getElementById("bookingContainer");
+
+    let userBookings = bookings.filter(b => b.user === user);
+
+    if (userBookings.length === 0) {
+        container.innerHTML = "<p class='no-booking'>No bookings found.</p>";
+        return;
+    }
+
+    userBookings.forEach(b => {
+        container.innerHTML += `
+            <div class="booking-card">
+                <div class="details">
+                    <div class="seat-id">Seat: ${b.seat}</div>
+                    <div>${b.date}</div>
+                    <div class="badge">${b.status}</div>
+                </div>
+                <button class="cancel-btn" onclick="cancelBooking('${b.seat}')">Cancel</button>
+            </div>
+        `;
+    });
+
+};
+
+// Cancel only selected seat
+function cancelBooking(seatId) {
+
+    let confirmCancel = confirm("Are you sure you want to cancel this booking?");
+    if (!confirmCancel) return;
+
+    let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+    bookings = bookings.filter(b => b.seat !== seatId);
+
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+
+    alert("Booking cancelled successfully!");
+
+    location.reload();
+}
+
+
+
+
+</script>
+
+</body>
+</html>

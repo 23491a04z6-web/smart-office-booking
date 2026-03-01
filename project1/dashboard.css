@@ -1,0 +1,100 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background:
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+    url("images/arif1.jpeg");
+  background-size: cover;
+}
+
+.topbar {
+  background: rgba(0,0,0,0.7);
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.notify {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.logout {
+  background: #ef4444;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dashboard {
+  padding: 30px;
+  color: white;
+}
+
+.nav-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.nav-card {
+  background: rgba(255,255,255,0.9);
+  color: #111827;
+  padding: 20px;
+  text-align: center;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.nav-card:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.section {
+  background: rgba(255,255,255,0.9);
+  color: #111827;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-box {
+  background: rgba(255,255,255,0.9);
+  color: #111827;
+  padding: 20px;
+  border-radius: 12px;
+  flex: 1;
+  text-align: center;
+}
+
+
